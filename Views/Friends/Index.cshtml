@@ -1,0 +1,29 @@
+@model FriendsPageViewModel
+@{ ViewData["Title"] = "Friends"; }
+<div class="page-head">
+    <div><h1>Friends</h1><div class="sub">@Model.Friends.Count @(Model.Friends.Count == 1 ? "friend" : "friends")</div></div>
+    <a class="n-btn" href="/Friends/Requests"><i class="fa-solid fa-user-clock"></i> Requests</a>
+</div>
+
+@if (Model.Friends.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-solid fa-user-group", Title = "No friends yet", Text = "Search for people you know and send them a friend request.", ActionUrl = "/Search", ActionText = "Find people" }' />
+}
+else
+{
+    <div class="card list-card">
+        @foreach (var f in Model.Friends) { <partial name="_UserCard" model="f" /> }
+    </div>
+}
+
+<div class="section-title"><h2>People you may know</h2></div>
+@if (Model.Suggestions.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-regular fa-compass", Title = "No suggestions right now", Text = "As more people join NEXT, they will show up here." }' />
+}
+else
+{
+    <div class="card list-card">
+        @foreach (var s in Model.Suggestions) { <partial name="_UserCard" model="s" /> }
+    </div>
+}

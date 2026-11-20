@@ -1,0 +1,8 @@
+@model string
+@{ ViewData["Title"] = "Error"; }
+<div class="card auth-card" style="text-align:center; margin:40px auto">
+    <h1>Something went wrong</h1>
+    <p class="muted" style="margin:8px 0 6px">We hit an unexpected problem. Please try again.</p>
+    <p class="muted small">Reference: @Model</p>
+    <a class="n-btn primary" href="/">Back to home</a>
+</div>

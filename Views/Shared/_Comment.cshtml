@@ -1,0 +1,14 @@
+@model CommentViewModel
+<div class="comment" data-comment-id="@Model.Id">
+    <a href="/u/@Model.AuthorUserName"><partial name="_Avatar" model="new AvatarVm(Model.AuthorAvatar, Model.AuthorName, 30)" /></a>
+    <div>
+        <div class="comment-bubble">
+            <a class="name" href="/u/@Model.AuthorUserName">@Model.AuthorName</a>
+            <p>@Model.Content</p>
+        </div>
+        <div class="comment-meta">
+            <time datetime="@Model.CreatedAt.Iso()">@Model.CreatedAt.ToString("MMM d")</time>
+            @if (Model.IsOwner) { <button type="button" data-act="delete-comment">Delete</button> }
+        </div>
+    </div>
+</div>

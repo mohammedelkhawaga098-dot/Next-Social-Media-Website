@@ -1,0 +1,19 @@
+@inject NEXT.Services.LayoutDataService LayoutSvc
+@{ var me = (await LayoutSvc.GetAsync()).User!; }
+<div class="card composer" data-composer>
+    <div class="composer-top">
+        <partial name="_Avatar" model="new AvatarVm(me.ProfilePicturePath, me.FullName, 40)" />
+        <textarea rows="1" maxlength="2000" placeholder="What's on your mind, @(me.FullName.Split(' ')[0])?" aria-label="Write a post"></textarea>
+    </div>
+    <div class="composer-preview" hidden>
+        <img alt="Selected image" src="" />
+        <button type="button" data-clear-image aria-label="Remove image"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="composer-bar">
+        <label class="n-btn ghost" style="cursor:pointer">
+            <i class="fa-regular fa-image"></i> Photo
+            <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden />
+        </label>
+        <button type="button" class="n-btn primary" data-submit>Post</button>
+    </div>
+</div>

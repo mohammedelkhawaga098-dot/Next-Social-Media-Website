@@ -1,0 +1,89 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = Model.FullName;
+    ViewData["Wide"] = true;
+    var card = new UserCardViewModel
+    {
+        Id = Model.Id, FullName = Model.FullName, UserName = Model.UserName, Avatar = Model.Avatar, State = Model.State
+    };
+    var ret = Context.Request.Path.ToString();
+}
+<div class="card profile-head">
+    <div class="cover">@if (Model.Cover is not null) { <img src="@Model.Cover" alt="Cover photo" /> }</div>
+    <div class="profile-info">
+        <div class="profile-top">
+            <partial name="_Avatar" model="new AvatarVm(Model.Avatar, Model.FullName, 96, Model.Id, Model.State == RelationState.Friends)" />
+            <div class="titles">
+                <h1>@Model.FullName</h1>
+                <span class="muted">@@@Model.UserName</span>
+            </div>
+            <div class="row-gap">
+                @if (Model.State == RelationState.Self)
+                {
+                    <a class="n-btn" href="/Settings"><i class="fa-regular fa-pen-to-square"></i> Edit profile</a>
+                }
+                else
+                {
+                    <partial name="_FriendActions" model="card" />
+                    <form asp-controller="Friends" asp-action="Follow" method="post" class="inline-form">
+                        <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+                        <button class="n-btn ghost">
+                            @if (Model.IsFollowing) { <i class="fa-solid fa-bell-slash"></i> <span>Unfollow</span> }
+                            else { <i class="fa-regular fa-bell"></i> <span>Follow</span> }
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Bio)) { <p class="profile-bio">@Model.Bio</p> }
+        <div class="stats">
+            <span><b>@Model.PostCount</b> posts</span>
+            <span><b>@Model.FriendCount</b> friends</span>
+            <span><b>@Model.FollowerCount</b> followers</span>
+            <span><b>@Model.FollowingCount</b> following</span>
+        </div>
+    </div>
+</div>
+
+<div class="profile-grid">
+    <aside>
+        <div class="card card-pad">
+            <h2>About</h2>
+            <ul class="about-list">
+                <li><i class="fa-regular fa-calendar"></i> Joined @Model.JoinedAt.ToString("MMMM yyyy")</li>
+                <li><i class="fa-regular fa-at"></i> @Model.UserName</li>
+            </ul>
+        </div>
+        <div class="card card-pad">
+            <div class="row-gap" style="justify-content:space-between"><h2>Friends</h2><span class="muted small">@Model.FriendCount</span></div>
+            @if (Model.FriendPreview.Count == 0)
+            {
+                <p class="muted small" style="margin:8px 0 0">No friends to show yet.</p>
+            }
+            else
+            {
+                <div class="friend-grid">
+                    @foreach (var f in Model.FriendPreview)
+                    {
+                        <a href="/u/@f.UserName"><partial name="_Avatar" model="new AvatarVm(f.Avatar, f.FullName, 54)" /><span>@f.FullName.Split(' ')[0]</span></a>
+                    }
+                </div>
+            }
+        </div>
+    </aside>
+
+    <section>
+        @if (Model.State == RelationState.Self)
+        {
+            <partial name="_Composer" />
+            <div style="height:12px"></div>
+        }
+        <div id="feed" data-feed-url="/Posts/Feed?userName=@Uri.EscapeDataString(Model.UserName)">
+            <div class="card skeleton-card" aria-hidden="true">
+                <div class="sk-row"><div class="sk sk-av"></div><div style="flex:1"><div class="sk sk-line" style="width:35%"></div><div class="sk sk-line" style="width:20%"></div></div></div>
+                <div class="sk sk-line" style="width:90%"></div>
+                <div class="sk sk-line" style="width:70%"></div>
+            </div>
+        </div>
+    </section>
+</div>

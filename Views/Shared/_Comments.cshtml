@@ -1,0 +1,15 @@
+@model CommentsVm
+<div class="comment-list">
+    @foreach (var c in Model.Comments)
+    {
+        <partial name="_Comment" model="c" />
+    }
+</div>
+@if (Model.Comments.Count == 0)
+{
+    <p class="muted small" data-empty>No comments yet. Start the conversation.</p>
+}
+<form class="comment-form" autocomplete="off">
+    <input class="input" type="text" maxlength="1000" placeholder="Write a comment…" aria-label="Write a comment" />
+    <button class="n-btn primary" type="submit" aria-label="Send comment"><i class="fa-solid fa-paper-plane"></i></button>
+</form>

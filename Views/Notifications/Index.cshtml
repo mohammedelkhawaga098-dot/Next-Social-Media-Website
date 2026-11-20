@@ -1,0 +1,36 @@
+@model List<NotificationViewModel>
+@{
+    ViewData["Title"] = "Notifications";
+    string Icon(NotificationType t) => t switch
+    {
+        NotificationType.FriendRequest => "fa-solid fa-user-plus",
+        NotificationType.FriendAccepted => "fa-solid fa-user-check",
+        NotificationType.PostLike => "fa-solid fa-heart",
+        NotificationType.PostComment => "fa-regular fa-comment",
+        NotificationType.PostShare => "fa-solid fa-retweet",
+        NotificationType.Message => "fa-regular fa-envelope",
+        _ => "fa-regular fa-bell"
+    };
+}
+<div class="page-head"><h1>Notifications</h1></div>
+
+@if (Model.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-regular fa-bell", Title = "You are all caught up", Text = "Likes, comments, friend requests and messages will show up here." }' />
+}
+else
+{
+    <div class="card list-card">
+        @foreach (var n in Model)
+        {
+            <a class="notif @(n.IsRead ? "" : "unread")" href="@n.Url">
+                <partial name="_Avatar" model="new AvatarVm(n.ActorAvatar, n.ActorName, 40)" />
+                <div class="body">
+                    <div>@n.Text</div>
+                    <div class="when"><time datetime="@n.CreatedAt.Iso()">@n.CreatedAt.ToString("MMM d, yyyy")</time></div>
+                </div>
+                <i class="kind @Icon(n.Type)"></i>
+            </a>
+        }
+    </div>
+}

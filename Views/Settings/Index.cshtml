@@ -1,0 +1,88 @@
+@model SettingsPageViewModel
+@{ ViewData["Title"] = "Settings"; }
+<div class="page-head"><h1>Settings</h1></div>
+
+<section class="card card-pad" id="profile">
+    <h2 style="margin-bottom:14px">Profile</h2>
+    <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data" novalidate>
+        <span asp-validation-for="Profile" class="field-error" style="margin-bottom:8px"></span>
+
+        <div class="settings-img">
+            <partial name="_Avatar" model="new AvatarVm(Model.Profile.CurrentAvatar, Model.Profile.FullName, 64)" />
+            <div style="flex:1">
+                <label asp-for="Profile.ProfilePicture" class="muted small">Profile picture</label>
+                <input asp-for="Profile.ProfilePicture" class="input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" />
+                <span asp-validation-for="Profile.ProfilePicture" class="field-error"></span>
+            </div>
+        </div>
+        <div class="settings-img">
+            <div class="cover-thumb">@if (Model.Profile.CurrentCover is not null) { <img src="@Model.Profile.CurrentCover" alt="Cover photo" /> }</div>
+            <div style="flex:1">
+                <label asp-for="Profile.CoverPhoto" class="muted small">Cover photo</label>
+                <input asp-for="Profile.CoverPhoto" class="input" type="file" accept="image/png,image/jpeg,image/gif,image/webp" />
+                <span asp-validation-for="Profile.CoverPhoto" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label asp-for="Profile.FullName"></label>
+            <input asp-for="Profile.FullName" class="input" />
+            <span asp-validation-for="Profile.FullName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Profile.UserName">Username</label>
+            <input asp-for="Profile.UserName" class="input" />
+            <span asp-validation-for="Profile.UserName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Profile.Email"></label>
+            <input asp-for="Profile.Email" class="input" type="email" />
+            <span asp-validation-for="Profile.Email" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Profile.Bio"></label>
+            <textarea asp-for="Profile.Bio" class="textarea" maxlength="300" placeholder="Tell people a little about yourself"></textarea>
+            <span asp-validation-for="Profile.Bio" class="field-error"></span>
+        </div>
+        <button class="n-btn primary" type="submit">Save profile</button>
+    </form>
+</section>
+
+<section class="card card-pad" id="appearance">
+    <h2>Appearance</h2>
+    <p class="muted small" style="margin:4px 0 14px">Choose how NEXT looks. Your choice is saved to your account.</p>
+    <form asp-action="SetTheme" method="post" class="theme-options">
+        <button class="theme-opt @(Model.Theme == "dark" ? "current" : "")" name="theme" value="dark" type="submit">
+            <span class="theme-swatch dark"></span>
+            <span><b>Dark</b><br /><span class="muted small">Black on black</span></span>
+            @if (Model.Theme == "dark") { <i class="fa-solid fa-circle-check" style="margin-left:auto;color:var(--accent)"></i> }
+        </button>
+        <button class="theme-opt @(Model.Theme == "light" ? "current" : "")" name="theme" value="light" type="submit">
+            <span class="theme-swatch light"></span>
+            <span><b>Light</b><br /><span class="muted small">Bright and clean</span></span>
+            @if (Model.Theme == "light") { <i class="fa-solid fa-circle-check" style="margin-left:auto;color:var(--accent)"></i> }
+        </button>
+    </form>
+</section>
+
+<section class="card card-pad" id="security">
+    <h2 style="margin-bottom:14px">Password</h2>
+    <form asp-action="ChangePassword" method="post" novalidate>
+        <div class="field">
+            <label asp-for="Password.CurrentPassword"></label>
+            <input asp-for="Password.CurrentPassword" class="input" autocomplete="current-password" />
+            <span asp-validation-for="Password.CurrentPassword" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password.NewPassword"></label>
+            <input asp-for="Password.NewPassword" class="input" autocomplete="new-password" />
+            <span asp-validation-for="Password.NewPassword" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password.ConfirmPassword"></label>
+            <input asp-for="Password.ConfirmPassword" class="input" autocomplete="new-password" />
+            <span asp-validation-for="Password.ConfirmPassword" class="field-error"></span>
+        </div>
+        <button class="n-btn primary" type="submit">Change password</button>
+    </form>
+</section>

@@ -1,0 +1,24 @@
+@model SearchViewModel
+@{ ViewData["Title"] = Model.Query.Length > 0 ? "Search: " + Model.Query : "Search"; }
+<div class="page-head"><h1>Search</h1></div>
+
+<form method="get" action="/Search" class="row-gap" style="margin-bottom:14px; flex-wrap:nowrap">
+    <input class="input" type="search" name="q" value="@Model.Query" maxlength="50" placeholder="Search people by name or username" aria-label="Search people" autofocus />
+    <button class="n-btn primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+</form>
+
+@if (Model.Query.Length == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-solid fa-magnifying-glass", Title = "Find people", Text = "Type a name or username to look someone up." }' />
+}
+else if (Model.Results.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-regular fa-face-frown", Title = "No one found", Text = "Nothing matched that search. Check the spelling or try a different name." }' />
+}
+else
+{
+    <div class="section-title" style="margin-top:0"><h2>People</h2><span class="count">@Model.Results.Count @(Model.Results.Count == 1 ? "result" : "results")</span></div>
+    <div class="card list-card">
+        @foreach (var u in Model.Results) { <partial name="_UserCard" model="u" /> }
+    </div>
+}

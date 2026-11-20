@@ -1,0 +1,20 @@
+@model AvatarVm
+@inject NEXT.Hubs.IPresenceTracker Presence
+@{
+    var name = string.IsNullOrWhiteSpace(Model.Name) ? "?" : Model.Name.Trim();
+    var initial = name.Substring(0, 1).ToUpperInvariant();
+}
+<span class="avatar" style="--size:@(Model.Size)px">
+    @if (!string.IsNullOrEmpty(Model.Path))
+    {
+        <img src="@Model.Path" alt="@name" loading="lazy" />
+    }
+    else
+    {
+        <span class="avatar-initial">@initial</span>
+    }
+    @if (Model.ShowStatus && Model.UserId is not null)
+    {
+        <i class="presence @(Presence.IsOnline(Model.UserId) ? "on" : "")" data-presence="@Model.UserId"></i>
+    }
+</span>

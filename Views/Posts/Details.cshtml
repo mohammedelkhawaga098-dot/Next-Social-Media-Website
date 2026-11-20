@@ -1,0 +1,4 @@
+@model PostViewModel
+@{ ViewData["Title"] = Model.AuthorName + "'s post"; }
+<div class="page-head"><a class="n-btn ghost" href="javascript:history.back()"><i class="fa-solid fa-arrow-left"></i> Back</a></div>
+<partial name="_PostCard" model="Model" />

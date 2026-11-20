@@ -1,0 +1,36 @@
+@model PostListViewModel
+@if (Model.Posts.Count == 0 && Model.Page == 1)
+{
+    EmptyStateVm empty;
+    if (Model.UserName is not null)
+    {
+        empty = Model.IsOwnProfile
+            ? new EmptyStateVm { Icon = "fa-regular fa-pen-to-square", Title = "You haven't posted yet", Text = "Share a thought or a photo and it will show up here." }
+            : new EmptyStateVm { Icon = "fa-regular fa-file-lines", Title = "No posts yet", Text = "When this person posts something, you'll see it here." };
+    }
+    else if (Model.Scope == FeedScope.Network)
+    {
+        empty = new EmptyStateVm
+        {
+            Icon = "fa-regular fa-newspaper", Title = "Your feed is quiet",
+            Text = "Posts from you, your friends and people you follow appear here. Find people to connect with, or look at everyone's posts.",
+            ActionUrl = "/Search", ActionText = "Find people"
+        };
+    }
+    else
+    {
+        empty = new EmptyStateVm { Icon = "fa-regular fa-newspaper", Title = "No posts yet", Text = "Nobody has posted anything. Be the first." };
+    }
+    <partial name="_EmptyState" model="empty" />
+}
+else
+{
+    foreach (var post in Model.Posts)
+    {
+        <partial name="_PostCard" model="post" />
+    }
+    if (Model.HasMore)
+    {
+        <div class="load-more"><button class="n-btn" data-load-more data-next-page="@(Model.Page + 1)">Load more</button></div>
+    }
+}

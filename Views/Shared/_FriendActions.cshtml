@@ -1,0 +1,34 @@
+@model UserCardViewModel
+@{ var ret = Context.Request.Path + Context.Request.QueryString; }
+@switch (Model.State)
+{
+    case RelationState.None:
+        <form asp-controller="Friends" asp-action="Send" method="post" class="inline-form">
+            <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+            <button class="n-btn primary"><i class="fa-solid fa-user-plus"></i> Add friend</button>
+        </form>
+        break;
+    case RelationState.RequestSent:
+        <form asp-controller="Friends" asp-action="Cancel" method="post" class="inline-form">
+            <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+            <button class="n-btn"><i class="fa-solid fa-clock"></i> Cancel request</button>
+        </form>
+        break;
+    case RelationState.RequestReceived:
+        <form asp-controller="Friends" asp-action="Accept" method="post" class="inline-form">
+            <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+            <button class="n-btn primary">Accept</button>
+        </form>
+        <form asp-controller="Friends" asp-action="Reject" method="post" class="inline-form">
+            <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+            <button class="n-btn">Decline</button>
+        </form>
+        break;
+    case RelationState.Friends:
+        <a class="n-btn" href="/Messages?with=@Model.UserName"><i class="fa-regular fa-comment"></i> Message</a>
+        <form asp-controller="Friends" asp-action="Remove" method="post" class="inline-form" data-confirm="Remove @Model.FullName from your friends?">
+            <input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="returnUrl" value="@ret" />
+            <button class="n-btn ghost danger" title="Remove friend"><i class="fa-solid fa-user-minus"></i></button>
+        </form>
+        break;
+}

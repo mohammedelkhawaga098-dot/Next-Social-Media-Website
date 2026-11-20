@@ -1,0 +1,38 @@
+@model RegisterViewModel
+@{ ViewData["Title"] = "Create account"; }
+<div class="card auth-card">
+    <h1>Create your account</h1>
+    <p class="muted small" style="margin-bottom:18px">It takes less than a minute.</p>
+
+    <form asp-action="Register" method="post" novalidate>
+        <div asp-validation-summary="ModelOnly" class="form-alert"></div>
+        <div class="field">
+            <label asp-for="FullName"></label>
+            <input asp-for="FullName" class="input" autocomplete="name" autofocus />
+            <span asp-validation-for="FullName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="UserName">Username</label>
+            <input asp-for="UserName" class="input" autocomplete="username" />
+            <span asp-validation-for="UserName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="input" type="email" autocomplete="email" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="input" autocomplete="new-password" />
+            <span class="muted small">At least 8 characters with an uppercase letter, a lowercase letter and a number.</span>
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" class="input" autocomplete="new-password" />
+            <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+        </div>
+        <button class="n-btn primary block" type="submit">Create account</button>
+    </form>
+    <div class="auth-foot">Already have an account? <a asp-action="Login">Log in</a></div>
+</div>

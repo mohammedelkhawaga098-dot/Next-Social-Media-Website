@@ -1,0 +1,30 @@
+@model RequestsPageViewModel
+@{ ViewData["Title"] = "Friend requests"; }
+<div class="page-head">
+    <div><h1>Friend requests</h1></div>
+    <a class="n-btn" href="/Friends"><i class="fa-solid fa-user-group"></i> Friends</a>
+</div>
+
+<div class="section-title" style="margin-top:0"><h2>Received</h2><span class="count">@Model.Incoming.Count</span></div>
+@if (Model.Incoming.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-regular fa-envelope-open", Title = "No new requests", Text = "When someone sends you a friend request, it will appear here." }' />
+}
+else
+{
+    <div class="card list-card">
+        @foreach (var u in Model.Incoming) { <partial name="_UserCard" model="u" /> }
+    </div>
+}
+
+<div class="section-title"><h2>Sent</h2><span class="count">@Model.Outgoing.Count</span></div>
+@if (Model.Outgoing.Count == 0)
+{
+    <partial name="_EmptyState" model='new EmptyStateVm { Icon = "fa-regular fa-paper-plane", Title = "Nothing pending", Text = "Requests you send stay here until they are answered." }' />
+}
+else
+{
+    <div class="card list-card">
+        @foreach (var u in Model.Outgoing) { <partial name="_UserCard" model="u" /> }
+    </div>
+}

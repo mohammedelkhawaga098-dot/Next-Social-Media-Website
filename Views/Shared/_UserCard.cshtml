@@ -1,0 +1,10 @@
+@model UserCardViewModel
+<div class="person">
+    <a href="/u/@Model.UserName"><partial name="_Avatar" model="new AvatarVm(Model.Avatar, Model.FullName, 46, Model.Id, true)" /></a>
+    <div class="info">
+        <a href="/u/@Model.UserName"><b>@Model.FullName</b></a>
+        <span>@@@Model.UserName</span>
+        @if (!string.IsNullOrWhiteSpace(Model.Bio)) { <p>@Model.Bio</p> }
+    </div>
+    <div class="actions"><partial name="_FriendActions" model="Model" /></div>
+</div>

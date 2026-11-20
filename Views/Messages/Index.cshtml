@@ -1,0 +1,94 @@
+@model MessagesPageViewModel
+@inject NEXT.Hubs.IPresenceTracker Presence
+@{
+    ViewData["Title"] = "Messages";
+    ViewData["Wide"] = true;
+    var active = Model.Active;
+}
+<div class="card chat @(active is not null ? "has-active" : "")">
+    <aside class="chat-list">
+        <h2>Messages</h2>
+        @if (Model.Conversations.Count == 0)
+        {
+            <div class="empty" style="padding:28px 16px">
+                <div class="ico"><i class="fa-regular fa-comments"></i></div>
+                <h3>No conversations</h3>
+                <p>Add friends to start chatting with them.</p>
+                <a class="n-btn primary" href="/Search">Find people</a>
+            </div>
+        }
+        @foreach (var c in Model.Conversations)
+        {
+            <a class="convo @(active?.UserId == c.UserId ? "active" : "") @(c.Unread > 0 ? "unread" : "")" href="/Messages?with=@c.UserName" data-user-id="@c.UserId">
+                <partial name="_Avatar" model="new AvatarVm(c.Avatar, c.FullName, 44, c.UserId, true)" />
+                <div class="info">
+                    <b>
+                        <span>@c.FullName</span>
+                        @if (c.LastMessageAt.HasValue) { <time datetime="@c.LastMessageAt.Value.Iso()">@c.LastMessageAt.Value.ToString("MMM d")</time> }
+                    </b>
+                    <span class="preview">@(c.LastMessage is null ? "Say hello" : (c.LastMessageMine ? "You: " + c.LastMessage : c.LastMessage))</span>
+                </div>
+                @if (c.Unread > 0) { <span class="nav-badge">@c.Unread</span> }
+            </a>
+        }
+    </aside>
+
+    <section class="chat-pane">
+        @if (active is null)
+        {
+            <div class="empty" style="margin:auto">
+                <div class="ico"><i class="fa-regular fa-comment-dots"></i></div>
+                <h3>Select a conversation</h3>
+                <p>Choose a friend on the left to read your messages or start a new chat.</p>
+            </div>
+        }
+        else
+        {
+            <div class="chat-head">
+                <a class="icon-btn back" href="/Messages" aria-label="Back to conversations"><i class="fa-solid fa-arrow-left"></i></a>
+                <a href="/u/@active.UserName"><partial name="_Avatar" model="new AvatarVm(active.Avatar, active.FullName, 40, active.UserId, true)" /></a>
+                <div data-username="@active.UserName">
+                    <a href="/u/@active.UserName"><b>@active.FullName</b></a>
+                    <div class="status" data-presence-text="@active.UserId">@(Presence.IsOnline(active.UserId) ? "Online" : "Offline")</div>
+                </div>
+            </div>
+
+            <div class="thread" data-recipient-id="@active.UserId">
+                @if (Model.Messages.Count == 0)
+                {
+                    <div class="empty" style="margin:auto; padding:20px"><p style="margin:0">No messages yet. Say hi to @active.FullName.Split(' ')[0].</p></div>
+                }
+                @foreach (var m in Model.Messages)
+                {
+                    <div class="msg @(m.IsMine ? "mine" : "theirs")">
+                        <div class="bubble">
+                            @if (m.ImagePath is not null)
+                            {
+                                <a href="@m.ImagePath" target="_blank" rel="noopener"><img src="@m.ImagePath" alt="Attachment" loading="lazy" /></a>
+                            }
+                            @if (m.Content.Length > 0) { <div class="msg-text">@m.Content</div> }
+                            <time data-t="time" datetime="@m.SentAt.Iso()">@m.SentAt.ToString("MMM d, HH:mm")</time>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.CanSend)
+            {
+                <div class="attach-name" hidden></div>
+                <form id="chat-form" class="chat-compose" autocomplete="off">
+                    <label class="icon-btn" style="cursor:pointer" title="Attach a photo">
+                        <i class="fa-regular fa-image"></i>
+                        <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden />
+                    </label>
+                    <textarea class="input" rows="1" maxlength="2000" placeholder="Write a message" aria-label="Message"></textarea>
+                    <button class="n-btn primary" type="submit" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            }
+            else
+            {
+                <div class="chat-note">You can only send messages to your friends. <a class="link" href="/u/@active.UserName">View profile</a></div>
+            }
+        }
+    </section>
+</div>
